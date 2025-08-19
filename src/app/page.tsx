@@ -1,103 +1,188 @@
-import Image from "next/image";
+'use client';
+
+import { useEffect, useState } from 'react';
+import { 
+  Box,
+  List,
+  ListItem,
+  IconButton,
+  Fab,
+  Typography,
+  Paper,
+  Container,
+  ListItemSecondaryAction,
+  Tooltip,
+  useTheme
+} from '@mui/material';
+import { Add as AddIcon, Delete as DeleteIcon, Edit as EditIcon } from '@mui/icons-material';
+import { useRouter } from 'next/navigation';
+import { Note } from '@/types/note';
+import { getNotes, deleteNote, createNewNote, saveNote } from '@/utils/noteStorage';
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [notes, setNotes] = useState<Note[]>([]);
+  const router = useRouter();
+  const theme = useTheme();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+  useEffect(() => {
+    const loadNotes = () => {
+      const allNotes = getNotes();
+      setNotes(allNotes.sort((a, b) => 
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      ));
+    };
+
+    loadNotes();
+    // 每5秒刷新一次笔记列表
+    const interval = setInterval(loadNotes, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleCreateNote = () => {
+    const newNote = createNewNote();
+    saveNote(newNote);
+    router.push(`/note/${newNote.id}`);
+  };
+
+  const handleDeleteNote = (event: React.MouseEvent, id: string) => {
+    event.stopPropagation();
+    if (window.confirm('确定要删除这条笔记吗？')) {
+      deleteNote(id);
+      setNotes(getNotes());
+    }
+  };
+
+  return (
+    <Container maxWidth="md" sx={{ py: 3 }}>
+      <Box sx={{ mb: 4 }}>
+        <Typography 
+          variant="h5" 
+          component="h1" 
+          sx={{
+            fontWeight: 600,
+            background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+            backgroundClip: 'text',
+            color: 'transparent',
+          }}
         >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          我的笔记
+        </Typography>
+      </Box>
+      
+      {notes.length === 0 ? (
+        <Paper 
+          sx={{ 
+            p: 4, 
+            textAlign: 'center',
+            borderRadius: 2,
+            backgroundColor: 'rgba(255,255,255,0.8)',
+            backdropFilter: 'blur(10px)',
+          }}
         >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+          <Typography color="text.secondary" sx={{ mb: 2 }}>
+            还没有笔记
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            点击右下角的按钮创建你的第一条笔记
+          </Typography>
+        </Paper>
+      ) : (
+        <List sx={{ 
+          display: 'grid', 
+          gap: 2,
+          gridTemplateColumns: {
+            xs: '1fr',
+            sm: 'repeat(2, 1fr)',
+          }
+        }}>
+          {notes.map((note) => (
+            <ListItem
+              key={note.id}
+              component={Paper}
+              sx={{ 
+                p: 2,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                borderRadius: 2,
+                backgroundColor: 'rgba(255,255,255,0.8)',
+                backdropFilter: 'blur(10px)',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 8px 16px rgba(0,0,0,0.1)',
+                },
+              }}
+              onClick={() => router.push(`/note/${note.id}`)}
+            >
+              <Box>
+                <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 0.5 }}>
+                  {note.title}
+                </Typography>
+                <Typography 
+                  component="span" 
+                  variant="body2" 
+                  color="text.secondary" 
+                  display="block"
+                  sx={{ mb: 1 }}
+                >
+                  {new Date(note.updatedAt).toLocaleString()}
+                </Typography>
+                <Typography 
+                  component="span"
+                  variant="body2" 
+                  color="text.secondary" 
+                  sx={{ 
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                  }}
+                >
+                  {note.content || '空笔记'}
+                </Typography>
+              </Box>
+              <ListItemSecondaryAction>
+                <Tooltip title="编辑笔记">
+                  <IconButton 
+                    edge="end" 
+                    onClick={() => router.push(`/note/${note.id}`)}
+                    sx={{ mr: 1 }}
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="删除笔记">
+                  <IconButton 
+                    edge="end" 
+                    onClick={(e) => handleDeleteNote(e, note.id)}
+                    color="error"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+      )}
+
+      <Tooltip title="新建笔记">
+        <Fab
+          color="primary"
+          sx={{
+            position: 'fixed',
+            right: { xs: 16, sm: 24 },
+            bottom: { xs: 80, sm: 24 },
+            transition: 'transform 0.2s',
+            '&:hover': {
+              transform: 'scale(1.1)',
+            },
+          }}
+          onClick={handleCreateNote}
         >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          <AddIcon />
+        </Fab>
+      </Tooltip>
+    </Container>
   );
 }
