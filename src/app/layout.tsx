@@ -9,11 +9,6 @@ const geist = GeistSans;
 export const metadata: Metadata = {
   title: 'AnyNote - 随时记录你的想法',
   description: '一个简单易用的笔记应用',
-  manifest: '/manifest.json',
-  icons: [
-    { rel: 'icon', url: '/favicon.ico' },
-    { rel: 'apple-touch-icon', url: '/icons/icon-192x192.png' },
-  ],
 };
 
 export const viewport: Viewport = {
@@ -31,6 +26,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh">
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+      </head>
       <body className={`${geist.variable} antialiased`}>
         <StyledRegistry>
           <Layout>{children}</Layout>

@@ -1,7 +1,7 @@
 {
   "name": "AnyNote",
   "short_name": "AnyNote",
-  "description": "一个简单易用的笔记应用",
+  "description": "A note-taking application.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
