@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="zh">
       <head>
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="/anynote/manifest.json" />
       </head>
       <body className={`${geist.variable} antialiased`}>
         <StyledRegistry>

@@ -15,8 +15,8 @@ const nextConfig = {
   },
 
   // If your repository name is 'my-app', uncomment the lines below
-  // basePath: '/my-app',
-  // assetPrefix: '/my-app',
+  basePath: '/anynote',
+  assetPrefix: '/anynote',
 };
 
 export default withPWA(nextConfig);
