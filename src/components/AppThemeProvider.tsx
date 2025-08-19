@@ -15,11 +15,7 @@ const AppThemeContext = createContext<{
 export const useAppTheme = () => useContext(AppThemeContext);
 
 export function AppThemeProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useState<AppSettings>(() => ({
-    fontSize: 'medium',
-    primaryColor: '#1976d2',
-    secondaryColor: '#9c27b0'
-  }));
+  const [settings, setSettings] = useState<AppSettings>(() => ({ fontSize: 'medium', primaryColor: '#1976d2', secondaryColor: '#9c27b0', theme: 'light' }));
 
   const theme = createTheme({
     palette: {
