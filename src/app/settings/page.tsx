@@ -20,7 +20,8 @@ export default function Settings() {
   const [settings, setSettings] = useState<AppSettings>({
     fontSize: 'medium',
     primaryColor: '#1976d2',
-    secondaryColor: '#9c27b0'
+    secondaryColor: '#9c27b0',
+    theme: 'light'
   });
 
   useEffect(() => {
@@ -67,6 +68,26 @@ export default function Settings() {
         >
           <CardContent>
             <FormControl component="fieldset" sx={{ width: '100%' }}>
+              <FormLabel component="legend" sx={{ mt: 3, mb: 1, color: 'text.primary', fontSize: '1.1rem' }}>
+                主题模式
+              </FormLabel>
+              <Box sx={{ mb: 3 }}>
+                <select
+                  value={settings.theme}
+                  onChange={(e) => handleSettingChange('theme', e.target.value as 'light' | 'dark')}
+                  style={{
+                    padding: '8px',
+                    borderRadius: '4px',
+                    border: '1px solid #ccc',
+                    background: 'transparent',
+                    color: 'inherit'
+                  }}
+                >
+                  <option value="light">浅色</option>
+                  <option value="dark">深色</option>
+                </select>
+              </Box>
+
               <FormLabel component="legend" sx={{ mt: 3, mb: 1, color: 'text.primary', fontSize: '1.1rem' }}>
                 字体大小
               </FormLabel>

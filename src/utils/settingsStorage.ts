@@ -2,12 +2,14 @@ export interface AppSettings {
   fontSize: 'small' | 'medium' | 'large';
   primaryColor: string;
   secondaryColor: string;
+  theme: 'light' | 'dark';
 }
 
 export const defaultSettings: AppSettings = {
   fontSize: 'medium',
   primaryColor: '#1976d2',
-  secondaryColor: '#9c27b0'
+  secondaryColor: '#9c27b0',
+  theme: 'light'
 };
 
 const SETTINGS_KEY = 'anynote_settings';
@@ -27,7 +29,8 @@ export const getSettings = (): AppSettings => {
     return {
       fontSize: ['small', 'medium', 'large'].includes(parsedSettings.fontSize) ? parsedSettings.fontSize : defaultSettings.fontSize,
       primaryColor: typeof parsedSettings.primaryColor === 'string' ? parsedSettings.primaryColor : defaultSettings.primaryColor,
-      secondaryColor: typeof parsedSettings.secondaryColor === 'string' ? parsedSettings.secondaryColor : defaultSettings.secondaryColor
+      secondaryColor: typeof parsedSettings.secondaryColor === 'string' ? parsedSettings.secondaryColor : defaultSettings.secondaryColor,
+      theme: ['light', 'dark'].includes(parsedSettings.theme) ? parsedSettings.theme : defaultSettings.theme
     };
   } catch (error) {
     console.error('Error loading settings:', error);
@@ -48,7 +51,8 @@ export const saveSettings = (settings: AppSettings): void => {
     const validatedSettings: AppSettings = {
       fontSize: ['small', 'medium', 'large'].includes(settings.fontSize) ? settings.fontSize : defaultSettings.fontSize,
       primaryColor: typeof settings.primaryColor === 'string' ? settings.primaryColor : defaultSettings.primaryColor,
-      secondaryColor: typeof settings.secondaryColor === 'string' ? settings.secondaryColor : defaultSettings.secondaryColor
+      secondaryColor: typeof settings.secondaryColor === 'string' ? settings.secondaryColor : defaultSettings.secondaryColor,
+      theme: ['light', 'dark'].includes(settings.theme) ? settings.theme : defaultSettings.theme
     };
 
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(validatedSettings));
