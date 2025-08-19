@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Box, Paper, TextField, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material';
@@ -5,13 +7,6 @@ import { Edit as EditIcon, Visibility as VisibilityIcon } from '@mui/icons-mater
 import { Note } from '@/types/note';
 import { getNotes, saveNote } from '@/utils/noteStorage';
 import MarkdownEditor from '@/components/MarkdownEditor';
-
-// This function is required for static export
-export async function generateStaticParams() {
-  // Since we're using localStorage, we can't generate static params at build time
-  // We'll return an empty array to satisfy the requirement but allow dynamic routing
-  return [];
-}
 
 export default function NotePage() {
   const { id } = useParams();
