@@ -13,6 +13,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // GitHub Pages requires trailing slash for proper routing
+  trailingSlash: true,
 
   // If your repository name is 'my-app', uncomment the lines below
   basePath: '/anynote',
